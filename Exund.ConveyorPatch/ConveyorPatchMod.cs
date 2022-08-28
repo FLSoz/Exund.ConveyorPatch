@@ -8,16 +8,23 @@ using HarmonyLib;
 
 namespace Exund.ConveyorPatch
 {
-    public class ConveyorPatchMod
+    public class ConveyorPatchMod : ModBase
     {
         static BindingFlags flags = BindingFlags.Instance | BindingFlags.NonPublic;
         static FieldInfo m_Output = typeof(ModuleItemConsume).GetField("m_Output", flags);
         static FieldInfo m_Holder = typeof(ModuleItemConveyor).GetField("m_Holder", flags);
 
-        public static void Load()
+        internal const string HarmonyID = "Exund.ConveyorPatch";
+        internal static Harmony harmony = new Harmony(HarmonyID);
+
+        public override void Init()
         {
-            var harmony = new Harmony("Exund.ConveyorPatch");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
+        }
+
+        public override void DeInit()
+        {
+            harmony.UnpatchAll(HarmonyID);
         }
 
         public static void ConveyorPatch(ModuleItemConveyor fromConveyor)
